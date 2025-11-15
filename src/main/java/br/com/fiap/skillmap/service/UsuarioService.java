@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 public class UsuarioService {
@@ -20,17 +21,20 @@ public class UsuarioService {
     private final HabilidadeRepository habilidadeRepository;
     private final RabbitTemplate rabbitTemplate;
     private final ChatClient chatClient;
+    private final PasswordEncoder passwordEncoder;
 
     public static final String USUARIOS_NOVOS_QUEUE = "fila.skillmap.usuarios.novos";
 
     public UsuarioService(UsuarioRepository usuarioRepository,
                           HabilidadeRepository habilidadeRepository,
                           RabbitTemplate rabbitTemplate,
-                          ChatClient chatClient) {
+                          ChatClient chatClient,
+                          PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.habilidadeRepository = habilidadeRepository;
         this.rabbitTemplate = rabbitTemplate;
         this.chatClient = chatClient;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional(readOnly = true)
@@ -49,7 +53,9 @@ public class UsuarioService {
         Usuario novoUsuario = new Usuario();
         novoUsuario.setNome(dto.getNome());
         novoUsuario.setEmail(dto.getEmail());
-        novoUsuario.setSenha(dto.getSenha());
+        // Criptografa a senha antes de salvar
+        String senhaCriptografada = passwordEncoder.encode(dto.getSenha());
+        novoUsuario.setSenha(senhaCriptografada);
 
         Usuario usuarioSalvo = usuarioRepository.save(novoUsuario);
 
