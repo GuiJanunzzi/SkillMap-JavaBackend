@@ -11,4 +11,10 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     Optional<Usuario> findByEmail(String email);
 
+    // Verifica se algum usuario tem uma habilidade na sua lista de 'habilidadesPossuidas'
+    boolean existsByHabilidadesPossuidasId(Long habilidadeId);
+
+    // Verifica se algum usuario tem esta habilidade na sua lista de 'metas'
+    boolean existsByMetasId(Long habilidadeId);
+
 }
