@@ -22,6 +22,7 @@ public class UsuarioService {
     private final RabbitTemplate rabbitTemplate;
     private final ChatClient chatClient;
     private final PasswordEncoder passwordEncoder;
+    private final MessageService messageService;
 
     public static final String USUARIOS_NOVOS_QUEUE = "fila.skillmap.usuarios.novos";
 
@@ -29,12 +30,14 @@ public class UsuarioService {
                           HabilidadeRepository habilidadeRepository,
                           RabbitTemplate rabbitTemplate,
                           ChatClient chatClient,
-                          PasswordEncoder passwordEncoder) {
+                          PasswordEncoder passwordEncoder,
+                          MessageService messageService) {
         this.usuarioRepository = usuarioRepository;
         this.habilidadeRepository = habilidadeRepository;
         this.rabbitTemplate = rabbitTemplate;
         this.chatClient = chatClient;
         this.passwordEncoder = passwordEncoder;
+        this.messageService = messageService;
     }
 
     @Transactional(readOnly = true)
@@ -138,16 +141,8 @@ public class UsuarioService {
     public String gerarConselhoCarreira(Long usuarioId) {
         UsuarioResponseDTO dto = buscarPorId(usuarioId); // Reutiliza nosso método
 
-        String prompt = String.format("""
-            Atue como um Conselheiro de Carreira de T.I.
-            Um profissional me informou seus dados:
-            - Habilidades Atuais: %s
-            - Habilidades Desejadas (Metas): %s
-
-            Com base nisso, me dê um conselho em um único parágrafo
-            sobre qual tecnologia ou soft skill ele deveria focar
-            para conectar suas habilidades atuais com suas metas.
-            """,
+        String prompt = messageService.get(
+                "ai.prompt.career.advice",
                 dto.getHabilidadesPossuidas().stream().map(HabilidadeResponseDTO::getNome).toList(),
                 dto.getMetas().stream().map(HabilidadeResponseDTO::getNome).toList()
         );
@@ -161,11 +156,15 @@ public class UsuarioService {
 
     private Usuario findUsuarioById(Long id) {
         return usuarioRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado. ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        messageService.get("user.notfound", id)
+                ));
     }
 
     private Habilidade findHabilidadeById(Long id) {
         return habilidadeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Habilidade não encontrada. ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        messageService.get("habilidade.notfound", id)
+                ));
     }
 }

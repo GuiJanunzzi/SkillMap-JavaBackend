@@ -7,10 +7,10 @@ import lombok.Data;
 @Data
 public class LoginRequestDTO {
 
-    @NotBlank(message = "O email é obrigatório")
-    @Email
+    @NotBlank(message = "{validation.geral.notblank}")
+    @Email(message = "{validation.usuario.email.format}")
     private String email;
 
-    @NotBlank(message = "A senha é obrigatória")
+    @NotBlank(message = "{validation.geral.notblank}")
     private String senha;
 }

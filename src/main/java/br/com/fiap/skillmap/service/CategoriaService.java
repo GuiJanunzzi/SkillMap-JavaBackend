@@ -2,9 +2,11 @@ package br.com.fiap.skillmap.service;
 
 import br.com.fiap.skillmap.dto.CategoriaRequestDTO;
 import br.com.fiap.skillmap.dto.CategoriaResponseDTO;
+import br.com.fiap.skillmap.exception.ResourceInUseException;
 import br.com.fiap.skillmap.exception.ResourceNotFoundException;
 import br.com.fiap.skillmap.model.Categoria;
 import br.com.fiap.skillmap.repository.CategoriaRepository;
+import br.com.fiap.skillmap.repository.HabilidadeRepository;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -16,9 +18,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class CategoriaService {
 
     private final CategoriaRepository categoriaRepository;
+    private final HabilidadeRepository habilidadeRepository;
+    private final MessageService messageService;
 
-    public CategoriaService(CategoriaRepository categoriaRepository) {
+    public CategoriaService(CategoriaRepository categoriaRepository,
+                            HabilidadeRepository habilidadeRepository,
+                            MessageService messageService) {
         this.categoriaRepository = categoriaRepository;
+        this.habilidadeRepository = habilidadeRepository;
+        this.messageService = messageService;
     }
 
     // 'key' para o cache funcionar com paginação
@@ -58,12 +66,21 @@ public class CategoriaService {
     @CacheEvict(value = "categorias", allEntries = true)
     @Transactional
     public void deletar(Long id) {
-        Categoria categoria = findCategoriaById(id); // Busca o existente
+        Categoria categoria = findCategoriaById(id);
+
+        if (habilidadeRepository.existsByCategoriaId(id)) {
+            throw new ResourceInUseException(
+                    messageService.get("categoria.inuse", id)
+            );
+        }
+
         categoriaRepository.delete(categoria);
     }
 
     private Categoria findCategoriaById(Long id) {
         return categoriaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada. ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        messageService.get("categoria.notfound", id)
+                ));
     }
 }

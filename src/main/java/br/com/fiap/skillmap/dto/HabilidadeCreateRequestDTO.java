@@ -7,11 +7,11 @@ import lombok.Data;
 @Data
 public class HabilidadeCreateRequestDTO {
 
-    @NotBlank(message = "O nome da habilidade é obrigatório")
+    @NotBlank(message = "{validation.habilidade.nome.notblank}")
     private String nome;
 
     private String descricao;
 
-    @NotNull(message = "O ID da categoria é obrigatório")
+    @NotNull(message = "{validation.geral.notnull}")
     private Long categoriaId;
 }

@@ -23,11 +23,16 @@ public class HabilidadeService {
     private final HabilidadeRepository habilidadeRepository;
     private final CategoriaRepository categoriaRepository;
     private final UsuarioRepository usuarioRepository;
+    private final MessageService messageService;
 
-    public HabilidadeService(HabilidadeRepository habilidadeRepository, CategoriaRepository categoriaRepository, UsuarioRepository usuarioRepository) {
+    public HabilidadeService(HabilidadeRepository habilidadeRepository,
+                             CategoriaRepository categoriaRepository,
+                             UsuarioRepository usuarioRepository,
+                             MessageService messageService) {
         this.habilidadeRepository = habilidadeRepository;
         this.categoriaRepository = categoriaRepository;
         this.usuarioRepository = usuarioRepository;
+        this.messageService = messageService;
     }
 
     // 'key' para o cache funcionar com paginação
@@ -92,7 +97,7 @@ public class HabilidadeService {
         if (emUso) {
             // Se estiver em uso, lança a exceção 409 CONFLICT
             throw new ResourceInUseException(
-                    "Não é possível deletar a Habilidade (ID: " + id + ") pois ela está associada a um ou mais usuários (em habilidades ou metas)."
+                    messageService.get("habilidade.inuse", id)
             );
         }
 
@@ -102,11 +107,15 @@ public class HabilidadeService {
 
     private Habilidade findHabilidadeById(Long id) {
         return habilidadeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Habilidade não encontrada. ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        messageService.get("habilidade.notfound", id)
+                ));
     }
 
     private Categoria findCategoriaById(Long id) {
         return categoriaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada para associar. ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        messageService.get("categoria.notfound.associar", id)
+                ));
     }
 }

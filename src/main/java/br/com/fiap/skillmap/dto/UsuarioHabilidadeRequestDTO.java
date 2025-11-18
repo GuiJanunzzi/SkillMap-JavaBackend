@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 public class UsuarioHabilidadeRequestDTO {
 
-    @NotNull(message = "O ID da habilidade é obrigatório")
+    @NotNull(message = "{validation.geral.notnull}")
     private Long habilidadeId;
 }

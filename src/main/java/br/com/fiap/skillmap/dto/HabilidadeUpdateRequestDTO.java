@@ -7,7 +7,7 @@ import lombok.Data;
 public class HabilidadeUpdateRequestDTO {
 
     // Todos os campos são opcionais na atualização
-    @Size(min = 2, message = "O nome da habilidade deve ter no mínimo 2 caracteres")
+    @Size(min = 2, message = "{validation.habilidade.nome.size}")
     private String nome;
 
     private String descricao;

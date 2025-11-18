@@ -3,6 +3,7 @@ package br.com.fiap.skillmap.controller;
 import br.com.fiap.skillmap.dto.UsuarioHabilidadeRequestDTO;
 import br.com.fiap.skillmap.dto.UsuarioResponseDTO;
 import br.com.fiap.skillmap.dto.UsuarioUpdateRequestDTO;
+import br.com.fiap.skillmap.service.MessageService;
 import br.com.fiap.skillmap.service.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -19,9 +20,11 @@ import java.util.Map;
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
+    private final MessageService messageService;
 
-    public UsuarioController(UsuarioService usuarioService) {
+    public UsuarioController(UsuarioService usuarioService, MessageService messageService) {
         this.usuarioService = usuarioService;
+        this.messageService = messageService;
     }
 
     // CRUD BÁSICO DE USUARIO
@@ -106,7 +109,8 @@ public class UsuarioController {
     public ResponseEntity<Map<String, String>> gerarConselho(@PathVariable Long id) {
         String conselho = usuarioService.gerarConselhoCarreira(id);
 
+        String conselhoKey = messageService.get("ai.response.key");
         // Retorna um JSON simples: {"conselho": "..."}
-        return ResponseEntity.ok(Map.of("conselho", conselho));
+        return ResponseEntity.ok(Map.of(conselhoKey, conselho));
     }
 }

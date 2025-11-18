@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -17,11 +18,11 @@ import java.io.IOException;
 public class SecurityFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;
-    private final UsuarioRepository usuarioRepository;
+    private final UserDetailsService userDetailsService;
 
-    public SecurityFilter(TokenService tokenService, UsuarioRepository usuarioRepository) {
+    public SecurityFilter(TokenService tokenService, UsuarioRepository usuarioRepository, UserDetailsService userDetailsService) {
         this.tokenService = tokenService;
-        this.usuarioRepository = usuarioRepository;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -37,8 +38,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 
             if (emailUsuario != null) {
                 // Se o token for válido busca o usuário no banco
-                UserDetails usuario = usuarioRepository.findByEmail(emailUsuario)
-                        .orElseThrow(() -> new RuntimeException("Usuário não encontrado no token."));
+                UserDetails usuario = userDetailsService.loadUserByUsername(emailUsuario);
 
                 // Informa ao Spring que o usuario está autenticado
                 var authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());

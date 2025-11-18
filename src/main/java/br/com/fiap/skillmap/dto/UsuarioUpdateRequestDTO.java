@@ -7,9 +7,9 @@ import lombok.Data;
 @Data
 public class UsuarioUpdateRequestDTO {
 
-    @Size(min = 3, message = "O nome deve ter no mínimo 3 caracteres")
+    @Size(min = 3, message = "{validation.usuario.nome.size}")
     private String nome;
 
-    @Email(message = "O email deve ter um formato válido")
+    @Email(message = "{validation.usuario.email.format}")
     private String email;
 }

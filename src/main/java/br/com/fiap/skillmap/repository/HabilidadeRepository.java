@@ -7,4 +7,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface HabilidadeRepository extends JpaRepository<Habilidade, Long> {
 
+    // Verifica se existe alguma Habilidade ligada a esta Categoria
+    boolean existsByCategoriaId(Long categoriaId);
+
 }

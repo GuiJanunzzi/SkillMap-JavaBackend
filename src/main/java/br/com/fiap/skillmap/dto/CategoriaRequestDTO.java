@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 public class CategoriaRequestDTO {
 
-    @NotBlank(message = "O nome da categoria é obrigatório")
+    @NotBlank(message = "{validation.categoria.nome.notblank}")
     private String nome;
 }

@@ -8,15 +8,15 @@ import lombok.Data;
 @Data
 public class UsuarioCreateRequestDTO {
 
-    @NotBlank(message = "O nome não pode estar em branco")
-    @Size(min = 3, message = "O nome deve ter no mínimo 3 caracteres")
+    @NotBlank(message = "{validation.geral.notblank}")
+    @Size(min = 3, message = "{validation.usuario.nome.size}")
     private String nome;
 
-    @NotBlank(message = "O email não pode estar em branco")
-    @Email(message = "O email deve ter um formato válido")
+    @NotBlank(message = "{validation.geral.notblank}")
+    @Email(message = "{validation.usuario.email.format}")
     private String email;
 
-    @NotBlank(message = "A senha não pode estar em branco")
-    @Size(min = 6, message = "A senha deve ter no mínimo 6 caracteres")
+    @NotBlank(message = "{validation.geral.notblank}")
+    @Size(min = 6, message = "{validation.usuario.senha.size}")
     private String senha;
 }

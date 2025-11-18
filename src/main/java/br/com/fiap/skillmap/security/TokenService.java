@@ -1,6 +1,7 @@
 package br.com.fiap.skillmap.security;
 
 import br.com.fiap.skillmap.model.Usuario;
+import br.com.fiap.skillmap.service.MessageService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -10,8 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 @Service
@@ -22,6 +22,11 @@ public class TokenService {
     private String secret;
 
     private final String ISSUER = "API SkillMap";
+    private final MessageService messageService;
+
+    public TokenService(MessageService messageService) {
+        this.messageService = messageService;
+    }
 
 
     // Gera um novo Token JWT para um usuário. (Sintaxe JJWT correta)
@@ -45,7 +50,7 @@ public class TokenService {
             return token;
 
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao gerar token JWT", e);
+            throw new RuntimeException(messageService.get("token.error.generation"), e);
         }
     }
 
@@ -56,7 +61,7 @@ public class TokenService {
         SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
 
         try {
-            // 2. Cria o parser (validador)
+            // Cria o parser (validador)
             Claims claims = Jwts.parser()
                     .verifyWith(secretKey) // Define a chave para verificar a assinatura
                     .requireIssuer(ISSUER) // Verifica se o emissor bate
@@ -64,7 +69,7 @@ public class TokenService {
                     .parseSignedClaims(tokenJWT) // Tenta validar o token
                     .getPayload();
 
-            // 3. Retorna o "dono" (email)
+            // Retorna o "dono" (email)
             return claims.getSubject();
 
         } catch (Exception e) {
@@ -73,10 +78,9 @@ public class TokenService {
         }
     }
 
-    // Método helper para definir a validade do token (ex: 2 horas).
+    // Metodo helper para definir a validade do token (ex: 2 horas).
     private Instant gerarDataDeExpiracao() {
-        return LocalDateTime.now()
-                .plusHours(2) // Token válido por 2 horas
-                .toInstant(ZoneOffset.of("-03:00")); // Fuso de Brasília
+        // Pega o tempo atual em UTC e soma 2 horas
+        return Instant.now().plus(2, ChronoUnit.HOURS);
     }
 }
