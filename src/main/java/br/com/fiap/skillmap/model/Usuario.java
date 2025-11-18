@@ -8,6 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -37,7 +38,7 @@ public class Usuario implements UserDetails {
             joinColumns = @JoinColumn(name = "ID_USUARIO"),
             inverseJoinColumns = @JoinColumn(name = "ID_HABILIDADE")
     )
-    private Set<Habilidade> habilidadesPossuidas;
+    private Set<Habilidade> habilidadesPossuidas = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -45,7 +46,7 @@ public class Usuario implements UserDetails {
             joinColumns = @JoinColumn(name = "ID_USUARIO"),
             inverseJoinColumns = @JoinColumn(name = "ID_HABILIDADE")
     )
-    private Set<Habilidade> metas;
+    private Set<Habilidade> metas = new HashSet<>();
 
 
 
