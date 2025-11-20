@@ -55,6 +55,6 @@ public class AuthenticationController {
         String token = tokenService.gerarToken(usuarioAutenticado);
 
         // Retorna o token para o cliente
-        return ResponseEntity.ok(new LoginResponseDTO(token));
+        return ResponseEntity.ok(new LoginResponseDTO(token, usuarioAutenticado.getId()));
     }
 }
