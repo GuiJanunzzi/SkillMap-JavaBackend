@@ -18,8 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
-    private final HabilidadeRepository habilidadeRepository;
-    private final RabbitTemplate rabbitTemplate;
+    private final HabilidadeRepository habilidadeRepository;;
     private final ChatClient chatClient;
     private final PasswordEncoder passwordEncoder;
     private final MessageService messageService;
@@ -28,13 +27,11 @@ public class UsuarioService {
 
     public UsuarioService(UsuarioRepository usuarioRepository,
                           HabilidadeRepository habilidadeRepository,
-                          RabbitTemplate rabbitTemplate,
                           ChatClient chatClient,
                           PasswordEncoder passwordEncoder,
                           MessageService messageService) {
         this.usuarioRepository = usuarioRepository;
         this.habilidadeRepository = habilidadeRepository;
-        this.rabbitTemplate = rabbitTemplate;
         this.chatClient = chatClient;
         this.passwordEncoder = passwordEncoder;
         this.messageService = messageService;
@@ -61,9 +58,6 @@ public class UsuarioService {
         novoUsuario.setSenha(senhaCriptografada);
 
         Usuario usuarioSalvo = usuarioRepository.save(novoUsuario);
-
-        // Envia mensagem para a fila
-        rabbitTemplate.convertAndSend(USUARIOS_NOVOS_QUEUE, usuarioSalvo.getEmail());
 
         return new UsuarioResponseDTO(usuarioSalvo);
     }
