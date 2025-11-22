@@ -7,7 +7,6 @@ import br.com.fiap.skillmap.model.Usuario;
 import br.com.fiap.skillmap.repository.HabilidadeRepository;
 import br.com.fiap.skillmap.repository.UsuarioRepository;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
