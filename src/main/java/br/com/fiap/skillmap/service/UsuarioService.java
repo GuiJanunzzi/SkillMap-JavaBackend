@@ -130,18 +130,28 @@ public class UsuarioService {
     }
 
     // Spring AI
-
     public String gerarConselhoCarreira(Long usuarioId) {
-        UsuarioResponseDTO dto = buscarPorId(usuarioId); // Reutiliza nosso método
+        UsuarioResponseDTO dto = buscarPorId(usuarioId);
 
-        String prompt = messageService.get(
-                "ai.prompt.career.advice",
-                dto.getHabilidadesPossuidas().stream().map(HabilidadeResponseDTO::getNome).toList(),
-                dto.getMetas().stream().map(HabilidadeResponseDTO::getNome).toList()
+        // Engenharia de Prompt: Persona + Contexto + Tarefa + Restrições
+        String promptTemplate = """
+                Atue como um Conselheiro de Carreira.
+                Um profissional me informou seus dados:
+                - Habilidades Atuais: %s
+                - Habilidades Desejadas (Metas): %s
+                Com base nisso, me dê um conselho em um único parágrafo
+                sobre qual tecnologia ou soft skill ele deveria focar
+                para conectar suas habilidades atuais com suas metas.
+                """;
+
+        // Formata o texto injetando as listas de strings
+        String promptFinal = promptTemplate.formatted(
+                dto.getHabilidadesPossuidas().stream().map(HabilidadeResponseDTO::getNome).toList().toString(),
+                dto.getMetas().stream().map(HabilidadeResponseDTO::getNome).toList().toString()
         );
 
         return chatClient.prompt()
-                .user(prompt)
+                .user(promptFinal)
                 .call()
                 .content();
     }
