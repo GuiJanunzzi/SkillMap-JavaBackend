@@ -32,13 +32,23 @@ Este módulo é o núcleo da aplicação, responsável por toda a regra de negó
 
 ### ✅ Pré-requisitos
 
-Para rodar este projeto localmente, você precisará ter instalado:
+Para rodar este projeto **localmente**, você precisará ter instalado:
 
 * **Java 17** (JDK)
 * **Maven 3.8+**
 * **Conta no Google AI Studio** (necessário para a chave da API do Gemini)
 
-### 🔧 Passo a Passo
+---
+
+**Deploy na Nuvem (Render)**
+
+Caso não deseje rodar o projeto localmente, a aplicação está em deploy e pode ser acessada pelo link abaixo:
+
+**Render Deploy URL:** [https://skillmap-javabackend.onrender.com](https://skillmap-javabackend.onrender.com)
+
+> ⚠️ **Nota sobre o Deploy:** A API está hospedada no plano gratuito do Render. Se o servidor ficar inativo por um período, ele pode "dormir" (sleep) para economizar recursos. A primeira requisição feita pelo app (como o login) pode demorar **50 segundos ou mais** para "acordar" o servidor. Após a primeira conexão, a aplicação funcionará em velocidade normal.
+
+### 🔧 Passo a Passo para rodar localmente
 
 #### 1. Clone o repositório
 
@@ -69,17 +79,9 @@ Utilize o Maven Wrapper para iniciar a aplicação Spring Boot:
 
 #### 4. Acesse a API
 
-O acesso pode ser feito localmente ou através do deploy na nuvem:
+O acesso pode ser feito localmente utilizando:
 
 * **Local Base URL:** `http://localhost:8080`
-
-**Deploy na Nuvem (Render)**
-
-A aplicação está em deploy e pode ser acessada pelo link abaixo:
-
-**Render Deploy URL:** [https://skillmap-javabackend.onrender.com](https://skillmap-javabackend.onrender.com)
-
-> ⚠️ **Nota sobre o Deploy:** A API está hospedada no plano gratuito do Render. Se o servidor ficar inativo por um período, ele pode "dormir" (sleep) para economizar recursos. A primeira requisição feita pelo app (como o login) pode demorar **50 segundos ou mais** para "acordar" o servidor. Após a primeira conexão, a aplicação funcionará em velocidade normal.
 
 ---
 
